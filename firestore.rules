@@ -1,0 +1,62 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // User profile documents
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // Users cannot list other users
+      allow create, update: if isOwner(userId) && isValidId(userId);
+      allow delete: if isOwner(userId);
+
+      // User subcollections
+      match /chats/{chatId} {
+        allow read, write: if isOwner(userId);
+
+        match /messages/{messageId} {
+          allow read, write: if isOwner(userId);
+        }
+      }
+
+      match /notes/{noteId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /quizzes/{quizId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /mistakes/{mistakeId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /study_plans/{planId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /checkins/{checkinId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /action_logs/{logId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+  }
+}

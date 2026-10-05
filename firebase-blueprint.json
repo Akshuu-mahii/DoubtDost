@@ -1,0 +1,187 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with learning preferences and safety configuration",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "preferredLanguage": { "type": "string" },
+        "level": { "type": "string" },
+        "onboardingComplete": { "type": "boolean" },
+        "interests": { "type": "array" },
+        "trustedContact": { "type": "string" },
+        "shareProgressWithParent": { "type": "boolean" },
+        "pauseSaving": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "name", "email", "onboardingComplete"]
+    },
+    "ChatSession": {
+      "title": "ChatSession",
+      "description": "A learning conversation session",
+      "type": "object",
+      "properties": {
+        "chatId": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["chatId", "userId", "title"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "A message within a learning chat session",
+      "type": "object",
+      "properties": {
+        "messageId": { "type": "string" },
+        "chatId": { "type": "string" },
+        "userId": { "type": "string" },
+        "role": { "type": "string" },
+        "content": { "type": "string" },
+        "style": { "type": "string" },
+        "language": { "type": "string" },
+        "tryFirst": { "type": "boolean" },
+        "truthCheckStatus": { "type": "string" },
+        "truthCheckSources": { "type": "array" },
+        "feedback": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["messageId", "chatId", "userId", "role", "content"]
+    },
+    "UserNote": {
+      "title": "UserNote",
+      "description": "User uploaded or typed study notes for grounding and RAG",
+      "type": "object",
+      "properties": {
+        "noteId": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "contentSnippet": { "type": "string" },
+        "chunksCount": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["noteId", "userId", "title"]
+    },
+    "QuizResult": {
+      "title": "QuizResult",
+      "description": "Results of an understanding check quiz",
+      "type": "object",
+      "properties": {
+        "quizId": { "type": "string" },
+        "userId": { "type": "string" },
+        "topic": { "type": "string" },
+        "score": { "type": "number" },
+        "totalQuestions": { "type": "number" },
+        "beforeConfidence": { "type": "number" },
+        "afterConfidence": { "type": "number" },
+        "strongConcepts": { "type": "array" },
+        "weakConcepts": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["quizId", "userId", "topic", "score", "totalQuestions"]
+    },
+    "MistakeItem": {
+      "title": "MistakeItem",
+      "description": "Mistake notebook entry for weak concepts and incorrect answers",
+      "type": "object",
+      "properties": {
+        "mistakeId": { "type": "string" },
+        "userId": { "type": "string" },
+        "topic": { "type": "string" },
+        "question": { "type": "string" },
+        "userAnswer": { "type": "string" },
+        "correctAnswer": { "type": "string" },
+        "explanation": { "type": "string" },
+        "reviewed": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["mistakeId", "userId", "topic", "question", "correctAnswer"]
+    },
+    "StudyPlanItem": {
+      "title": "StudyPlanItem",
+      "description": "Scheduled study plan item recommended by Planner agent and approved by student",
+      "type": "object",
+      "properties": {
+        "planId": { "type": "string" },
+        "userId": { "type": "string" },
+        "day": { "type": "string" },
+        "topic": { "type": "string" },
+        "task": { "type": "string" },
+        "status": { "type": "string" },
+        "approved": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["planId", "userId", "day", "topic", "task", "status"]
+    },
+    "MoodCheckin": {
+      "title": "MoodCheckin",
+      "description": "Student emotional and mood check-in",
+      "type": "object",
+      "properties": {
+        "checkinId": { "type": "string" },
+        "userId": { "type": "string" },
+        "mood": { "type": "string" },
+        "note": { "type": "string" },
+        "reply": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["checkinId", "userId", "mood"]
+    },
+    "ActionLog": {
+      "title": "ActionLog",
+      "description": "Audit log of actions taken by autonomous agents with student oversight",
+      "type": "object",
+      "properties": {
+        "logId": { "type": "string" },
+        "userId": { "type": "string" },
+        "agentName": { "type": "string" },
+        "actionDescription": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["logId", "userId", "agentName", "actionDescription"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile documents"
+    },
+    "/users/{userId}/chats/{chatId}": {
+      "schema": "ChatSession",
+      "description": "Chat sessions per user"
+    },
+    "/users/{userId}/chats/{chatId}/messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Chat messages per chat session"
+    },
+    "/users/{userId}/notes/{noteId}": {
+      "schema": "UserNote",
+      "description": "User uploaded and indexed notes"
+    },
+    "/users/{userId}/quizzes/{quizId}": {
+      "schema": "QuizResult",
+      "description": "Quiz results per user"
+    },
+    "/users/{userId}/mistakes/{mistakeId}": {
+      "schema": "MistakeItem",
+      "description": "Mistake notebook items per user"
+    },
+    "/users/{userId}/study_plans/{planId}": {
+      "schema": "StudyPlanItem",
+      "description": "Study plan items per user"
+    },
+    "/users/{userId}/checkins/{checkinId}": {
+      "schema": "MoodCheckin",
+      "description": "Mood check-ins per user"
+    },
+    "/users/{userId}/action_logs/{logId}": {
+      "schema": "ActionLog",
+      "description": "Action logs for agent actions per user"
+    }
+  }
+}

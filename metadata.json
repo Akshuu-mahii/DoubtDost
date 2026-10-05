@@ -1,0 +1,6 @@
+{
+  "name": "Nanban AI",
+  "description": "Student-controlled, multi-agent AI learning companion with detailed lessons, notes grounding, quizzes, and personal study tools.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
